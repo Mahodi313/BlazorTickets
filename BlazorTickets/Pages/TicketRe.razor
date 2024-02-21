@@ -1,0 +1,37 @@
+﻿@using static BlazorTickets.Pages.TicketCenter
+
+<div class="col-md-6 mb-4">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">@Ticket.Title</h3>
+            <p class="card-text"><strong>User:</strong> @Ticket.SubmittedBy</p>
+            <p class="card-text"><strong>Description:</strong> @Ticket.Description</p>
+            <p class="card-text">
+                <strong>Status:</strong>
+                <span class="badge @(Ticket.IsResolved ? "bg-success" : "bg-danger")">
+                    @(Ticket.IsResolved ? "Resolved" : "Not Resolved")
+                </span>
+            </p>
+            <div class="mb-2">
+                <h5>Tags:</h5>
+                @foreach (var tag in Ticket.Tags)
+                {
+                    <span class="badge bg-primary me-1">@tag</span>
+                }
+            </div>
+        </div>
+        <div class="card-footer">
+            <ResponseRe Responses="@Ticket.Responses" />
+            <hr />
+            <div>
+                <input type="text" />
+                <button class="btn btn-primary">Post comment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+	[Parameter]
+	public TicketModel Ticket { get; set; }
+}

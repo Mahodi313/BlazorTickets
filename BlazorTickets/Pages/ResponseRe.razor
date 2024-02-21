@@ -1,0 +1,29 @@
+﻿@using static BlazorTickets.Pages.TicketCenter
+
+@if (Responses != null && Responses.Any())
+{
+    <h5>Comments:</h5>
+    <hr />
+    @foreach (var response in Responses)
+    {
+        <div class="card mb-2">
+            <div class="card-header">
+                <strong>User:</strong> @response.SubmittedBy
+            </div>
+            <div class="card-body">
+                <p class="card-text">@response.Response</p>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="card mb-2">
+        <strong>No comments on this ticket yet!</strong>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<ResponseModel> Responses { get; set; }
+}
