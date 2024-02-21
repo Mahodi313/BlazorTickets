@@ -8,5 +8,6 @@ namespace Shared
 {
     internal class TestGit
     {
+        public int Id { get; set; }
     }
 }
