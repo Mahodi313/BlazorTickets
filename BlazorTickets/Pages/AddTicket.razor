@@ -1,0 +1,57 @@
+﻿@page "/AddTicket"
+@using BlazorTickets.Services
+@using Shared.Models
+@inject ITicketsService ticketsService
+<h3>Add a ticket</h3>
+<p>It should be anything programming related.</p>
+<hr />
+<EditForm Model="NewTicket" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <fieldset>
+        <legend>Ticket Details</legend>
+
+        <div class="mb-3">
+            <label for="SubmittedBy" class="form-label">Username:</label>
+            <InputText id="SubmittedBy" class="form-control" @bind-Value="NewTicket.SubmittedBy" placeholder="Enter your username"></InputText>
+            <ValidationMessage For="@(() => NewTicket.SubmittedBy)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Title" class="form-label">Title:</label>
+            <InputText id="Title" class="form-control" @bind-Value="NewTicket.Title" placeholder="Enter a title for your ticket"></InputText>
+            <ValidationMessage For="@(() => NewTicket.Title)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="Description" class="form-label">Description:</label>
+            <InputTextArea id="Description" class="form-control" @bind-Value="NewTicket.Description" placeholder="Describe the issue"></InputTextArea>
+            <ValidationMessage For="@(() => NewTicket.Description)" />
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary" disabled="@(!EditContext.Validate())">Post Ticket</button>
+        </div>
+    </fieldset>
+</EditForm>
+
+
+@code {
+    public TicketModel NewTicket { get; set; } = new();
+
+    private EditContext EditContext;
+
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(NewTicket);
+    }
+
+    private async Task HandleSubmit()
+    {
+        NewTicket.IsResolved = false;
+        NewTicket.Responses = new();
+        NewTicket.TicketTags = new();
+        await ticketsService.PostTicket(NewTicket);
+	}
+}

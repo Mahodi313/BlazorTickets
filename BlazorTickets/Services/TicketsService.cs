@@ -19,11 +19,11 @@ public class TicketsService : ITicketsService
 		{
 			string ticketssJson = await response.Content.ReadAsStringAsync();
 
-			List<TicketModel>? animals = JsonConvert.DeserializeObject<List<TicketModel>>(ticketssJson);
+			List<TicketModel>? tickets = JsonConvert.DeserializeObject<List<TicketModel>>(ticketssJson);
 
-			if (animals != null)
+			if (tickets != null)
 			{
-				return animals;
+				return tickets;
 			}
 		}
 		throw new HttpRequestException();
@@ -31,7 +31,7 @@ public class TicketsService : ITicketsService
 	public async Task PostTicket(TicketModel ticketModel)
 	{
 
-		await Client.PostAsJsonAsync("animals", ticketModel);
+		await Client.PostAsJsonAsync("tickets", ticketModel);
 	}
 	public async Task UpdateTicket(int ticketId, TicketModel ticketModel)
 	{
