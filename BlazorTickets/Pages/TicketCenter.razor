@@ -1,10 +1,12 @@
 ﻿@page "/TicketCenter"
+@using BlazorTickets.Services
+@using Shared.Models
+@inject ITicketsService ticketsService 
 
 
 <section class="container mt-4">
     <h1 class="mb-3">Ticket Center</h1>
     <hr />
-
     @if (tickets != null && tickets.Any())
     {
         <div class="row">
@@ -22,104 +24,11 @@
 </section>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@* DUMMY DATA *@
-
-
 @code {
+    private List<TicketModel> tickets = new();
 
-	private static List<TicketModel> tickets = new()
-	{
-		new TicketModel()
-		{
-			Id = 1,
-			Title = "Problem With Javascript",
-			Description = "I get a error with my javascript",
-			SubmittedBy = "Mehdi",
-			IsResolved = false,
-			Tags = new()
-			{
-				"Javascript",
-				"Git"
-			},
-			Responses = new()
-			{
-				new ResponseModel()
-				{
-					Id = 1,
-					Response = "Try shutting up",
-					SubmittedBy = "Gustav",
-					TicketId = 1
-				},
-				new ResponseModel()
-				{
-					Id = 2,
-					Response = "We don't care, please delete.",
-					SubmittedBy = "Tobias",
-					TicketId = 1
-				}
-			}
-		},
-		new TicketModel()
-		{
-			Id = 1,
-			Title = "Problem With Python",
-			Description = "I get a error with my Python",
-			SubmittedBy = "Tobias",
-			IsResolved = true,
-			Tags = new()
-			{
-				"Python",
-				"SQL"
-			},
-		}
-	};
-
-
-
-	public class TicketModel
-	{
-		public int Id { get; set; }
-		public string Title { get; set; } = null!;
-		public string? Description { get; set; }
-		public string SubmittedBy { get; set; } = null!;
-		public bool IsResolved { get; set; }
-		public List<string> Tags { get; set; } = new();
-		public List<ResponseModel> Responses { get; set; } = new();
-	}
-
-	public class ResponseModel
-	{
-		public int Id { get; set; }
-		public string Response { get; set; }
-		public string SubmittedBy { get; set; }
-		public int TicketId { get; set; }
-		public TicketModel Ticket { get; set; }
-	}
-
+    protected override async Task OnInitializedAsync()
+    {
+        tickets = await ticketsService.GetTickets();
+    }
 }
