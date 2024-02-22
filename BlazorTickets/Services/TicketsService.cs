@@ -31,7 +31,7 @@ public class TicketsService : ITicketsService
 	public async Task PostTicket(TicketModel ticketModel)
 	{
 
-		await Client.PostAsJsonAsync("tickets", ticketModel);
+		await Client.PostAsJsonAsync("Tickets", ticketModel);
 	}
 	public async Task UpdateTicket(int ticketId, TicketModel ticketModel)
 	{

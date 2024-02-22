@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
-
 namespace ServerApp.Database
 {
     public class TicketsDbContext : DbContext
