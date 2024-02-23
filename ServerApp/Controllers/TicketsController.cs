@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ServerApp.Database;
 using Shared.Models;
 
@@ -12,10 +13,12 @@ namespace ServerApp.Controllers
 		//Inject TicketsRepository to access Methods 
 
 		private readonly TicketsRepository<TicketModel> _ticketRepo;
+		private readonly TicketsDbContext _DbContext;
 
-		public TicketsController(TicketsRepository<TicketModel> ticketRepo)
+		public TicketsController(TicketsRepository<TicketModel> ticketRepo, TicketsDbContext DbContext)
 		{
 			_ticketRepo = ticketRepo;
+			_DbContext = DbContext;
 		}
 
 		[HttpGet]
@@ -84,8 +87,6 @@ namespace ServerApp.Controllers
 
 			return Ok(dbTicket);
 		}
-
-
-	}
+    }
 }
 

@@ -11,5 +11,5 @@ namespace BlazorTickets.Services
 		Task PostTicket(TicketModel ticketModel);
 		Task UpdateTicket(int ticketId, TicketModel ticketModel);
 		Task DeleteTicket(int ticketId);
-	}
+    }
 }

@@ -12,5 +12,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddScoped<ITicketsService, TicketsService>();
 builder.Services.AddScoped<IResponseService, ResponseService>();
+builder.Services.AddScoped<ITagService, TagService>();
 
 await builder.Build().RunAsync();

@@ -10,8 +10,8 @@ namespace Shared.Models
 		public string? Description { get; set; }
 		public string SubmittedBy { get; set; } = null!;
 		public bool IsResolved { get; set; }
-		public List<TicketTag> TicketTags { get; set; } = new List<TicketTag>();
-		public List<ResponseModel> Responses { get; set; } = new List<ResponseModel>();
+		public List<TagModel> Tags { get; set; } = new();
+		public List<ResponseModel> Responses { get; set; } = new();
 
 	}
 }

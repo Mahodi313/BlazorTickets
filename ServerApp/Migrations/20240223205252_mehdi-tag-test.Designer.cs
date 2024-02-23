@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServerApp.Database;
 
@@ -10,9 +11,11 @@ using ServerApp.Database;
 namespace ServerApp.Migrations
 {
     [DbContext(typeof(TicketsDbContext))]
-    partial class TicketsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240223205252_mehdi-tag-test")]
+    partial class mehditagtest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
