@@ -6,11 +6,12 @@
 
 <section class="container mt-4">
     <h1 class="mb-3">Ticket Center</h1>
+    <input type="text" @bind="searchWord"  @oninput="FilterTickets" />
     <hr />
     @if (tickets != null && tickets.Any())
     {
         <div class="row">
-            @foreach (var ticket in tickets)
+            @foreach (var ticket in filteredTickets)
             {
                 <TicketRe Ticket="@ticket" />
 
@@ -26,9 +27,25 @@
 
 @code {
     private List<TicketModel> tickets = new();
+    private List<TicketModel> filteredTickets = new();
+    private string? searchWord;
 
     protected override async Task OnInitializedAsync()
     {
         tickets = await ticketsService.GetTickets();
+        filteredTickets = tickets;
+    }
+
+    private void FilterTickets(ChangeEventArgs e)
+    {
+        searchWord = e.Value?.ToString();
+        if (string.IsNullOrWhiteSpace(searchWord))
+        {
+            filteredTickets = tickets;
+        }
+        else
+        {
+            filteredTickets = tickets.Where(t => t.Title.StartsWith(searchWord, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
     }
 }
