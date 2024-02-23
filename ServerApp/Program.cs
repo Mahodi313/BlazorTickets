@@ -19,6 +19,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TicketsDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TicketConnection")));
 
 builder.Services.AddScoped<TicketsRepository<TicketModel>>();
+builder.Services.AddScoped<TicketsRepository<ResponseModel>>();
+builder.Services.AddScoped<TicketsRepository<TagModel>>();
 
 builder.Services.AddCors(options =>
 {

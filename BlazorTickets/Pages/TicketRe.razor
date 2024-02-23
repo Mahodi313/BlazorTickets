@@ -1,5 +1,7 @@
-﻿@using Shared.Models
+﻿@using BlazorTickets.Services
+@using Shared.Models
 @using static BlazorTickets.Pages.TicketCenter
+@inject IResponseService responseService
 
 <div class="col-md-6 mb-4">
     <div class="card">
@@ -25,17 +27,38 @@
             <ResponseRe Responses="@Ticket.Responses" />
             <hr />
             <div>
-                @* TODO: FIX POSTING COMMENTS *@
-                <input type="text" placeholder="Comment" />
-                <input type="text" placeholder="Username" />
-                <button class="btn btn-primary">Post comment</button>
+                <EditForm Model="NewResponse" OnSubmit="PostComment">
+                    <InputText @bind-Value="NewResponse.Response" placeholder="Comment"></InputText>
+                    <InputText @bind-Value="NewResponse.SubmittedBy" placeholder="Username"></InputText>
+                    <button type="submit" class="btn btn-primary">Post comment</button>
+                </EditForm>
             </div>
         </div>
     </div>
 </div>
 
 @code {
-	[Parameter]
-	public TicketModel Ticket { get; set; }
-    
+    [Parameter]
+    public TicketModel Ticket { get; set; } = new();
+    public ResponseModel NewResponse { get; set; } = new ResponseModel();
+    private async Task PostComment()
+    {
+        NewResponse.TicketId = Ticket.Id;
+
+        if (NewResponse != null)
+        {
+            await responseService.PostResponse(NewResponse);
+
+            if (Ticket.Responses == null)
+            {
+                Ticket.Responses = new List<ResponseModel>();
+            }
+
+            Ticket.Responses.Add(NewResponse);
+
+            StateHasChanged();
+
+            NewResponse = new();
+        }
+    }
 }
