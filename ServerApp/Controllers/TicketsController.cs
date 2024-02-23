@@ -4,88 +4,88 @@ using Shared.Models;
 
 namespace ServerApp.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TicketsController : ControllerBase
-    {
+	[Route("api/[controller]")]
+	[ApiController]
+	public class TicketsController : ControllerBase
+	{
 
-        //injectar TicketsDbContext så att databasen updateras 
-        //TODO: använda repository för databas metoder och kalla på dem i Controller
+		//Inject TicketsRepository to access Methods 
 
-        private readonly TicketsDbContext _context;
+		private readonly TicketsRepository<TicketModel> _ticketRepo;
 
-        public TicketsController(TicketsDbContext context)
-        {
-            _context = context;
-        }
+		public TicketsController(TicketsRepository<TicketModel> ticketRepo)
+		{
+			_ticketRepo = ticketRepo;
+		}
 
-        [HttpGet]
-        public async Task<ActionResult<List<TicketModel>>> GetAllTicketsWithResponses()
-        {
-            TicketsRepository<TicketModel> ticketRepo = new(_context);
-            var tickets = await ticketRepo.GetAllInclude("Responses");
-            return Ok(tickets);
-        }
+		[HttpGet]
+		public async Task<ActionResult<List<TicketModel>>> GetAllTicketsWithResponses()
+		{
 
-        [HttpGet("{id}")]
+			var tickets = await _ticketRepo.GetAllInclude("Responses");
+			return Ok(tickets);
+		}
 
-        public async Task<ActionResult<TicketModel>> GetTicketById(int id)
-        {
-            var result = await _context.Ticket.FindAsync(id);
+		[HttpGet("{id}")]
 
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<TicketModel>> AddTicket(TicketModel newTicket)
-        {
-            _context.Add(newTicket);
-            await _context.SaveChangesAsync();
-
-            return Ok(newTicket);
-        }
+		public async Task<ActionResult<TicketModel>> GetTicketById(int id)
+		{
+			var result = await _ticketRepo.Get(id);
 
 
-        [HttpDelete("{id}")]
+			if (result == null)
+			{
+				return NotFound();
+			}
+			return Ok(result);
+		}
 
-        public async Task<ActionResult<TicketModel>> DeleteTicket(int id)
-        {
-            var result = await _context.Ticket.FindAsync(id);
+		[HttpPost]
+		public async Task<ActionResult<TicketModel>> AddTicket(TicketModel newTicket)
+		{
+			await _ticketRepo.Add(newTicket);
 
-            if (result == null)
-            {
-                return NotFound();
-            }
-            _context.Remove(result);
-            await _context.SaveChangesAsync();
+			await _ticketRepo.Complete();
 
-            return Ok(result);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult<TicketModel>> UpdateTicket(int id, TicketModel updatedTicket)
-        {
-            var dbTicket = await _context.Ticket.FindAsync(id);
-
-            if (dbTicket == null)
-            {
-                return NotFound();
-            }
-            //Uppdatera id?
-            dbTicket.Title = updatedTicket.Title;
-            dbTicket.Description = updatedTicket.Description;
-            dbTicket.SubmittedBy = updatedTicket.SubmittedBy;
-            dbTicket.IsResolved = updatedTicket.IsResolved;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(dbTicket);
-        }
+			return Ok(newTicket);
+		}
 
 
-    }
+		[HttpDelete("{id}")]
+		public async Task<ActionResult<TicketModel>> DeleteTicket(int id)
+		{
+			var result = await _ticketRepo.Delete(id);
+
+			if (result == null)
+			{
+				return NotFound();
+			}
+
+			return Ok(result);
+		}
+
+		[HttpPut("{id}")]
+		public async Task<ActionResult<TicketModel>> UpdateTicket(int id, TicketModel updatedTicket)
+		{
+			var dbTicket = await _ticketRepo.Get(id);
+
+
+			if (dbTicket == null)
+			{
+				return NotFound();
+			}
+
+			dbTicket.Title = updatedTicket.Title;
+			dbTicket.Description = updatedTicket.Description;
+			dbTicket.SubmittedBy = updatedTicket.SubmittedBy;
+			dbTicket.IsResolved = updatedTicket.IsResolved;
+
+			await _ticketRepo.Complete();
+
+			return Ok(dbTicket);
+		}
+
+
+	}
 }
+
