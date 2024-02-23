@@ -6,7 +6,7 @@
 
 <section class="container mt-4">
     <h1 class="mb-3">Ticket Center</h1>
-    <input type="text" @bind="searchWord"  @oninput="FilterTickets" />
+    <input placeholder="Search for ticket..." type="text" @bind="searchWord"  @oninput="FilterTickets" />
     <hr />
     @if (tickets != null && tickets.Any())
     {

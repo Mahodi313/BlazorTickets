@@ -2,6 +2,8 @@
 @using BlazorTickets.Services
 @using Shared.Models
 @inject ITicketsService ticketsService
+@inject ITagService tagsService
+@inject NavigationManager navigationManager
 <h3>Add a ticket</h3>
 <p>It should be anything programming related.</p>
 <hr />
@@ -29,6 +31,15 @@
             <InputTextArea id="Description" class="form-control" @bind-Value="NewTicket.Description" placeholder="Describe the issue"></InputTextArea>
             <ValidationMessage For="@(() => NewTicket.Description)" />
         </div>
+        <div class="mb-3">
+            <label for="Tags" class="form-label">Tags:</label>
+            @foreach (var tag in Tags)
+            {
+                <div>
+                    <input type="checkbox" value="@tag.Id" @onchange="@(e => ToggleTagSelection(tag.Id, e.Value))" /> @tag.Name
+                </div>
+            }
+        </div>
 
         <div class="d-grid">
             <button type="submit" class="btn btn-primary" disabled="@(!EditContext.Validate())">Post Ticket</button>
@@ -36,22 +47,41 @@
     </fieldset>
 </EditForm>
 
-
 @code {
     public TicketModel NewTicket { get; set; } = new();
+    public List<TagModel> Tags { get; set; } = new();
+    public List<int> SelectedTagIds { get; set; } = new();
 
     private EditContext EditContext;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         EditContext = new EditContext(NewTicket);
+        Tags = await tagsService.GetAll();
+    }
+
+    private void ToggleTagSelection(int tagId, object isChecked)
+    {
+        if ((bool) isChecked)
+        {
+            if (!SelectedTagIds.Contains(tagId))
+            {
+                SelectedTagIds.Add(tagId);
+            }
+            else
+            {
+                SelectedTagIds.Remove(tagId);
+            }
+        }
     }
 
     private async Task HandleSubmit()
     {
         NewTicket.IsResolved = false;
         NewTicket.Responses = new();
-        NewTicket.TicketTags = new();
+
         await ticketsService.PostTicket(NewTicket);
-	}
+
+        navigationManager.NavigateTo("/TicketCenter");
+    }
 }
