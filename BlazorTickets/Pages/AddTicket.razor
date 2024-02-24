@@ -62,26 +62,35 @@
 
     private void ToggleTagSelection(int tagId, object isChecked)
     {
-        if ((bool) isChecked)
+        bool isCheckedBool = (bool)isChecked;
+
+        if (isCheckedBool)
         {
             if (!SelectedTagIds.Contains(tagId))
             {
                 SelectedTagIds.Add(tagId);
             }
-            else
+        }
+        else
+        {
+            if (SelectedTagIds.Contains(tagId))
             {
                 SelectedTagIds.Remove(tagId);
             }
         }
+
     }
 
     private async Task HandleSubmit()
     {
         NewTicket.IsResolved = false;
         NewTicket.Responses = new();
+        NewTicket.Tags = NewTicket.Tags = Tags.Where(t => SelectedTagIds.Contains(t.Id)).ToList();
 
         await ticketsService.PostTicket(NewTicket);
 
+
         navigationManager.NavigateTo("/TicketCenter");
+     
     }
 }

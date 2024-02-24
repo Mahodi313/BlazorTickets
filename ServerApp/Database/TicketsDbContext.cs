@@ -20,19 +20,9 @@ namespace ServerApp.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
-            //modelBuilder.Entity<TicketTag>()
-            //.HasKey(tt => new { tt.TicketId, tt.TagId });
-
-            //// Konfigurera många-till-många relationen mellan TicketModel och TagMo
-            //modelBuilder.Entity<TicketTag>()
-            //.HasOne(tt => tt.Ticket)
-            //.WithMany(t => t.TicketTags)
-            //.HasForeignKey(tt => tt.TicketId);
-            //modelBuilder.Entity<TicketTag>()
-            //.HasOne(tt => tt.Tag)
-            //.WithMany(t => t.TicketTags)
-            //.HasForeignKey(tt => tt.TagId);
+            modelBuilder.Entity<TicketModel>()
+            .HasMany(t => t.Tags)
+            .WithMany(t => t.Tickets);
 
             // Konfigurera en-till-många-relationen mellan TicketModel och ResponseMode
             modelBuilder.Entity<ResponseModel>()

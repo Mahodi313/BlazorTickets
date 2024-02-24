@@ -10,9 +10,9 @@ namespace ServerApp.Controllers
 	public class TicketsController : ControllerBase
 	{
 
-		//Inject TicketsRepository to access Methods 
+        //Inject TicketsRepository to access Methods 
 
-		private readonly TicketsRepository<TicketModel> _ticketRepo;
+        private readonly TicketsRepository<TicketModel> _ticketRepo;
 		private readonly TicketsDbContext _DbContext;
 
 		public TicketsController(TicketsRepository<TicketModel> ticketRepo, TicketsDbContext DbContext)
@@ -25,7 +25,7 @@ namespace ServerApp.Controllers
 		public async Task<ActionResult<List<TicketModel>>> GetAllTicketsWithResponses()
 		{
 
-			var tickets = await _ticketRepo.GetAllInclude("Responses");
+			var tickets = await _ticketRepo.GetAllInclude("Responses", "Tags");
 			return Ok(tickets);
 		}
 
@@ -43,18 +43,35 @@ namespace ServerApp.Controllers
 			return Ok(result);
 		}
 
-		[HttpPost]
-		public async Task<ActionResult<TicketModel>> AddTicket(TicketModel newTicket)
-		{
-			await _ticketRepo.Add(newTicket);
+        [HttpPost]
+        public async Task<ActionResult<TicketModel>> AddTicket(TicketModel newTicket)
+        {
+            if (newTicket.Tags != null)
+            {
+                var processedTags = new List<TagModel>();
+                foreach (var tag in newTicket.Tags)
+                {
+                    var existingTag = await _DbContext.Tags.FirstOrDefaultAsync(t => t.Id == tag.Id);
+                    if (existingTag != null)
+                    {
+                        processedTags.Add(existingTag);
+                    }
+                    else
+                    {
+                        processedTags.Add(tag); 
+                    }
+                }
+                newTicket.Tags = processedTags; 
+            }
 
-			await _ticketRepo.Complete();
+            _DbContext.Ticket.Add(newTicket); 
+            await _DbContext.SaveChangesAsync();
 
-			return Ok(newTicket);
-		}
+            return Ok(newTicket);
+        }
 
 
-		[HttpDelete("{id}")]
+        [HttpDelete("{id}")]
 		public async Task<ActionResult<TicketModel>> DeleteTicket(int id)
 		{
 			var result = await _ticketRepo.Delete(id);
