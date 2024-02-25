@@ -9,7 +9,7 @@ namespace BlazorTickets.Services
 
 		Task<List<TicketModel>> GetTickets();
 		Task PostTicket(TicketModel ticketModel);
-		Task UpdateTicket(int ticketId, TicketModel ticketModel);
+		Task UpdateTicket(TicketModel ticketModel);
 		Task DeleteTicket(int ticketId);
     }
 }
