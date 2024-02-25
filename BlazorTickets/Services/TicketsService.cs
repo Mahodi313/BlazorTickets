@@ -33,9 +33,9 @@ public class TicketsService : ITicketsService
 
 		await Client.PostAsJsonAsync("Tickets", ticketModel);
 	}
-	public async Task UpdateTicket(int ticketId, TicketModel ticketModel)
+	public async Task UpdateTicket(TicketModel ticketModel)
 	{
-		var response = await Client.PutAsJsonAsync($"tickets/{ticketId}", ticketModel);
+		var response = await Client.PutAsJsonAsync("Tickets", ticketModel);
 		if (!response.IsSuccessStatusCode)
 		{
 			throw new HttpRequestException();

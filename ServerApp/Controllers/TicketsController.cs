@@ -84,13 +84,13 @@ namespace ServerApp.Controllers
 			return Ok(result);
 		}
 
-		[HttpPut("{id}")]
-		public async Task<ActionResult<TicketModel>> UpdateTicket(int id, TicketModel updatedTicket)
+		[HttpPut]
+		public async Task<ActionResult<TicketModel>> UpdateTicket(TicketModel updatedTicket)
 		{
-			var dbTicket = await _ticketRepo.Get(id);
+            var dbTicket = await _ticketRepo.Get(updatedTicket.Id);
 
 
-			if (dbTicket == null)
+            if (dbTicket == null)
 			{
 				return NotFound();
 			}
@@ -100,9 +100,10 @@ namespace ServerApp.Controllers
 			dbTicket.SubmittedBy = updatedTicket.SubmittedBy;
 			dbTicket.IsResolved = updatedTicket.IsResolved;
 
-			await _ticketRepo.Complete();
-
-			return Ok(dbTicket);
+            _DbContext.Entry(dbTicket).State = EntityState.Modified;
+            await _ticketRepo.Complete();
+            
+            return Ok(dbTicket);
 		}
     }
 }

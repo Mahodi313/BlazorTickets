@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Shared.Models
 {
@@ -10,8 +11,8 @@ namespace Shared.Models
 		public string? Description { get; set; }
 		public string SubmittedBy { get; set; } = null!;
 		public bool IsResolved { get; set; }
-		public List<TagModel> Tags { get; set; } = new();
-		public List<ResponseModel> Responses { get; set; } = new();
+        public List<TagModel> Tags { get; set; } = new();
+        public List<ResponseModel> Responses { get; set; } = new();
 
 	}
 }
